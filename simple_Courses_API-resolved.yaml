@@ -102,7 +102,7 @@ paths:
     put:
       tags:
       - admins
-      summary: edit part of data an course item
+      summary: edit all data an course item
       description: Puts an item of Course to the system
       operationId: putCourse
       consumes:
