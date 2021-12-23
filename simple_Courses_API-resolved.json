@@ -3,9 +3,9 @@
   "info": {
     "description": "This is a simple API",
     "version": "1.0.0",
-    "title": "Simple Inventory API",
+    "title": "Simple Courses API",
     "contact": {
-      "email": "you@your-company.com"
+      "email": "alexander@makklays.com.ua"
     },
     "license": {
       "name": "Apache 2.0",
@@ -20,49 +20,48 @@
       "description": "Secured Admin-only calls"
     },
     {
-      "name": "developers",
-      "description": "Operations available to regular developers"
+      "name": "front-end",
+      "description": "Operations available for front-end developers"
     }
   ],
   "schemes": [
     "https"
   ],
   "paths": {
-    "/inventory": {
+    "/courses": {
       "get": {
         "tags": [
-          "developers"
+          "front-end"
         ],
-        "summary": "searches inventory",
-        "description": "By passing in the appropriate options, you can search for\navailable inventory in the system\n",
-        "operationId": "searchInventory",
+        "summary": "searches course",
+        "description": "By passing in the appropriate options, you can search for\navailable course in the system or all courses by 100\n",
+        "operationId": "searchCourse",
         "produces": [
           "application/json"
         ],
         "parameters": [
           {
-            "name": "searchString",
+            "name": "page",
             "in": "query",
-            "description": "pass an optional search string for looking up inventory",
+            "description": "number of page",
             "required": false,
-            "type": "string"
+            "type": "integer"
           },
           {
-            "name": "skip",
+            "name": "send_currency",
             "in": "query",
-            "description": "number of records to skip for pagination",
+            "description": "number of currency",
             "required": false,
             "type": "integer",
             "minimum": 0,
             "format": "int32"
           },
           {
-            "name": "limit",
+            "name": "revice_currency",
             "in": "query",
-            "description": "maximum number of records to return",
+            "description": "number of currency",
             "required": false,
             "type": "integer",
-            "maximum": 50,
             "minimum": 0,
             "format": "int32"
           }
@@ -73,12 +72,27 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/InventoryItem"
+                "$ref": "#/definitions/Course"
               }
             }
           },
+          "201": {
+            "description": "item created"
+          },
           "400": {
             "description": "bad input parameter"
+          },
+          "401": {
+            "description": "don't have Bearer token"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          },
+          "422": {
+            "description": "invalid validation"
+          },
+          "500": {
+            "description": "exception"
           }
         }
       },
@@ -86,9 +100,9 @@
         "tags": [
           "admins"
         ],
-        "summary": "adds an inventory item",
-        "description": "Adds an item to the system",
-        "operationId": "addInventory",
+        "summary": "adds an course item",
+        "description": "Adds an item of Course to the system",
+        "operationId": "addCourse",
         "consumes": [
           "application/json"
         ],
@@ -98,11 +112,11 @@
         "parameters": [
           {
             "in": "body",
-            "name": "inventoryItem",
-            "description": "Inventory item to add",
+            "name": "course",
+            "description": "Item of course to add",
             "required": false,
             "schema": {
-              "$ref": "#/definitions/InventoryItem"
+              "$ref": "#/definitions/Course"
             }
           }
         ],
@@ -113,59 +127,265 @@
           "400": {
             "description": "invalid input, object invalid"
           },
+          "401": {
+            "description": "don't have Bearer token"
+          },
           "409": {
             "description": "an existing item already exists"
+          },
+          "422": {
+            "description": "invalid validation"
+          },
+          "500": {
+            "description": "exception"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "admins"
+        ],
+        "summary": "edit part of data an course item",
+        "description": "Puts an item of Course to the system",
+        "operationId": "putCourse",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "course",
+            "description": "Item of course to edit",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Course"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "401": {
+            "description": "don't have Bearer token"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          },
+          "422": {
+            "description": "invalid validation"
+          },
+          "500": {
+            "description": "exception"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "admins"
+        ],
+        "summary": "delete an course item",
+        "description": "Delete an item of Course to the system",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "id",
+            "description": "ID of course",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Course"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "401": {
+            "description": "don't have Bearer token"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          },
+          "422": {
+            "description": "invalid validation"
+          },
+          "500": {
+            "description": "exception"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "admins"
+        ],
+        "summary": "edit part of data an course item",
+        "description": "Patchs an item of Course to the system",
+        "operationId": "patchCourse",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "course",
+            "description": "Item of course to edit",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Course"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "401": {
+            "description": "don't have Bearer token"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          },
+          "422": {
+            "description": "invalid validation"
+          },
+          "500": {
+            "description": "exception"
+          }
+        }
+      }
+    },
+    "/currencies": {
+      "post": {
+        "tags": [
+          "admins"
+        ],
+        "summary": "adds an currency item",
+        "description": "Adds an item of Currency to the system",
+        "operationId": "addCurrency",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "currency",
+            "description": "Item of currency to add",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/Currency"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "item created"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "401": {
+            "description": "don't have Bearer token"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          },
+          "422": {
+            "description": "invalid validation"
+          },
+          "500": {
+            "description": "exception"
           }
         }
       }
     }
   },
   "definitions": {
-    "InventoryItem": {
+    "Course": {
       "type": "object",
       "required": [
-        "id",
-        "manufacturer",
-        "name",
-        "releaseDate"
+        "recive_course",
+        "recive_currency",
+        "send_course",
+        "send_currency"
       ],
       "properties": {
         "id": {
-          "type": "string",
-          "format": "uuid",
-          "example": "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          "type": "integer",
+          "format": "id",
+          "example": 1234567
         },
-        "name": {
-          "type": "string",
-          "example": "Widget Adapter"
+        "send_currency": {
+          "type": "integer",
+          "format": "send_currency",
+          "example": 212
         },
-        "releaseDate": {
+        "recive_currency": {
+          "type": "integer",
+          "format": "recive_currency",
+          "example": 12
+        },
+        "send_course": {
+          "type": "string",
+          "example": "123.12121212"
+        },
+        "recive_course": {
+          "type": "string",
+          "example": "1"
+        },
+        "created_at": {
           "type": "string",
           "format": "date-time",
-          "example": "2016-08-29T09:12:33.001+0000"
-        },
-        "manufacturer": {
-          "$ref": "#/definitions/Manufacturer"
+          "example": "2021-12-15 09:12:33"
         }
       }
     },
-    "Manufacturer": {
+    "Currency": {
+      "type": "object",
       "required": [
-        "name"
+        "title"
       ],
       "properties": {
-        "name": {
-          "type": "string",
-          "example": "ACME Corporation"
+        "id": {
+          "type": "integer",
+          "format": "id",
+          "example": 1234567
         },
-        "homePage": {
+        "title": {
           "type": "string",
-          "format": "url",
-          "example": "https://www.acme-corp.com"
+          "format": "title",
+          "example": "EUR"
         },
-        "phone": {
+        "country": {
           "type": "string",
-          "example": "408-867-5309"
+          "format": "country",
+          "example": "Spain"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2021-12-15 10-12-36"
         }
       }
     }
